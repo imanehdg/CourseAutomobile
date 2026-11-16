@@ -1,0 +1,29 @@
+@startuml
+skinparam sequenceMessageAlign center
+actor Utilisateur
+participant Menu
+participant GestionVoitures
+participant Voiture
+
+Utilisateur -> Menu : choisit "1. Ajouter une voiture"
+Menu -> Utilisateur : demande id, nom, marque, vitesse
+Utilisateur -> Menu : saisit les données
+Menu -> GestionVoitures : ajouter(id, nom, marque, vitesse)
+
+alt l'identifiant existe déjà
+  GestionVoitures --> Menu : IllegalArgumentException("Identifiant déjà utilisé")
+  Menu --> Utilisateur : affiche le message d'erreur
+else l'identifiant est libre
+  GestionVoitures -> Voiture : new Voiture(id, nom, marque, vitesse)
+  alt vitesse <= 0
+    Voiture --> GestionVoitures : IllegalArgumentException("Vitesse invalide")
+    GestionVoitures --> Menu : exception propagée
+    Menu --> Utilisateur : affiche le message d'erreur
+  else vitesse valide
+    Voiture --> GestionVoitures : voiture créée
+    GestionVoitures -> GestionVoitures : ajoute la voiture à la liste
+    GestionVoitures --> Menu : succès
+    Menu --> Utilisateur : "Voiture ajoutée avec succès"
+  end
+end
+@enduml
