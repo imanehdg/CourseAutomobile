@@ -1,0 +1,42 @@
+@startuml
+skinparam sequenceMessageAlign center
+actor Utilisateur
+participant Menu
+participant GestionCourse
+participant Course
+participant Simulateur
+participant Participation
+
+Utilisateur -> Menu : choisit "7. Démarrer une course"
+Menu -> GestionCourse : getCourseCourante()
+GestionCourse --> Menu : course (ou null)
+
+alt aucune course configurée
+  Menu --> Utilisateur : "Aucune course configurée"
+else course existante
+  Menu -> Course : estPrete()
+  Course --> Menu : true / false
+  alt moins de 2 voitures ou course déjà démarrée
+    Menu --> Utilisateur : message d'erreur explicite
+  else course prête
+    Menu -> Simulateur : demarrer(course)
+    Simulateur -> Course : setEtat(EN_COURS)
+
+    loop tant que toutes les voitures ne sont pas arrivées
+      loop pour chaque participation
+        alt la voiture n'est pas arrivée
+          Simulateur -> Participation : avancer(distanceTotale, tour)
+          note right : distance += vitesse\nplafonnée à la distance totale\nenregistre le tour d'arrivée si fini
+        end
+      end
+      Simulateur -> Utilisateur : afficherProgression()
+    end
+
+    Simulateur -> Course : setEtat(TERMINEE)
+    Simulateur -> Course : calculerClassement()
+    Course --> Simulateur : liste triée de Participation
+    Simulateur --> Menu : fin de simulation
+    Menu --> Utilisateur : affiche gagnant, classement, distances, tours
+  end
+end
+@enduml
