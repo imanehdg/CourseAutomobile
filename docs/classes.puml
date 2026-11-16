@@ -1,0 +1,99 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor #F5F9FF
+skinparam classBorderColor #2F5597
+
+enum EtatCourse {
+  CONFIGUREE
+  EN_COURS
+  TERMINEE
+}
+
+class Voiture {
+  - id : int
+  - nom : String
+  - marque : String
+  - vitesse : double
+  + Voiture(id : int, nom : String, marque : String, vitesse : double)
+  + getId() : int
+  + getNom() : String
+  + getMarque() : String
+  + getVitesse() : double
+  + setNom(nom : String) : void
+  + setMarque(marque : String) : void
+  + setVitesse(vitesse : double) : void
+}
+
+class Participation {
+  - distanceParcourue : double
+  - tourArrivee : int
+  + Participation(voiture : Voiture)
+  + getVoiture() : Voiture
+  + getDistanceParcourue() : double
+  + getTourArrivee() : int
+  + estArrivee() : boolean
+  + avancer(distanceTotale : double, tour : int) : void
+  + getTempsTheorique(distanceTotale : double) : double
+}
+
+class Course {
+  - id : int
+  - nom : String
+  - distanceTotale : double
+  - etat : EtatCourse
+  - nombreToursTotal : int
+  + Course(id : int, nom : String, distanceTotale : double)
+  + inscrire(voiture : Voiture) : void
+  + estPrete() : boolean
+  + contientVoiture(idVoiture : int) : boolean
+  + getParticipations() : List<Participation>
+  + getEtat() : EtatCourse
+  + setEtat(etat : EtatCourse) : void
+  + calculerClassement() : List<Participation>
+}
+
+class GestionVoitures {
+  - voitures : List<Voiture>
+  + GestionVoitures(gestionCourse : GestionCourse)
+  + ajouter(id : int, nom : String, marque : String, vitesse : double) : void
+  + lister() : List<Voiture>
+  + rechercher(id : int) : Voiture
+  + modifier(id : int, nom : String, marque : String, vitesse : double) : void
+  + supprimer(id : int) : void
+}
+
+class GestionCourse {
+  - courseCourante : Course
+  + creerCourse(id : int, nom : String, distance : double) : Course
+  + getCourseCourante() : Course
+  + voitureEngagee(idVoiture : int) : boolean
+}
+
+class Simulateur {
+  + demarrer(course : Course) : void
+  - executerTour(course : Course, tour : int) : void
+  - afficherProgression(course : Course) : void
+}
+
+class Menu {
+  - gestionVoitures : GestionVoitures
+  - gestionCourse : GestionCourse
+  - simulateur : Simulateur
+  + lancer() : void
+  - lireEntier(message : String) : int
+  - lireDouble(message : String) : double
+}
+
+Course "1" *-- "2..*" Participation : contient >
+Participation "*" --> "1" Voiture : concerne >
+Course --> EtatCourse
+
+GestionVoitures "1" o-- "0..*" Voiture : gère >
+GestionVoitures --> GestionCourse : consulte >
+GestionCourse "1" o-- "0..1" Course : course courante
+
+Simulateur ..> Course : fait avancer
+Menu --> GestionVoitures
+Menu --> GestionCourse
+Menu --> Simulateur
+@enduml
