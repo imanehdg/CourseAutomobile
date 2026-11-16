@@ -1,1 +1,63 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #F5F9FF
+  BorderColor #2F5597
+}
 
+actor "Utilisateur" as U
+
+rectangle "Application de gestion de courses automobiles" {
+
+  ' --- Gestion des voitures (F1) ---
+  usecase "Ajouter une voiture" as UC1
+  usecase "Afficher les voitures" as UC2
+  usecase "Rechercher une voiture" as UC3
+  usecase "Modifier une voiture" as UC4
+  usecase "Supprimer une voiture" as UC5
+
+  ' --- Configuration (F2) ---
+  usecase "Créer et configurer\nune course" as UC6
+  usecase "Consulter la configuration\nd'une course" as UC7
+
+  ' --- Simulation et résultats (F3, F4) ---
+  usecase "Démarrer une course" as UC8
+  usecase "Consulter les résultats" as UC9
+
+  ' --- Cas inclus ---
+  usecase "Valider les données saisies" as V1
+  usecase "Vérifier l'unicité\nde l'identifiant" as V2
+  usecase "Vérifier que la voiture\nn'est pas engagée\ndans une course en cours" as V3
+  usecase "Sélectionner les voitures\nparticipantes" as V4
+  usecase "Simuler la progression\ntour par tour" as V5
+  usecase "Déterminer le classement" as V6
+
+  ' --- Cas d'extension ---
+  usecase "Lancer en mode automatique" as E1
+  usecase "Afficher un message d'erreur" as E2
+}
+
+U --> UC1
+U --> UC2
+U --> UC3
+U --> UC4
+U --> UC5
+U --> UC6
+U --> UC7
+U --> UC8
+U --> UC9
+
+UC1 ..> V1 : <<include>>
+UC1 ..> V2 : <<include>>
+UC4 ..> V1 : <<include>>
+UC4 ..> V3 : <<include>>
+UC5 ..> V3 : <<include>>
+UC6 ..> V1 : <<include>>
+UC6 ..> V4 : <<include>>
+UC8 ..> V5 : <<include>>
+UC8 ..> V6 : <<include>>
+
+E1 ..> UC8 : <<extend>>
+E2 ..> V1 : <<extend>>
+@enduml
