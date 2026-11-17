@@ -2,11 +2,14 @@ public class VoitureRunnable implements Runnable {
     private final Participation participation;
     private final double distanceTotale;
     private final long delaiMs;
+    private final ClassementPartage classement;
 
-    public VoitureRunnable(Participation participation, double distanceTotale, long delaiMs) {
+    public VoitureRunnable(Participation participation, double distanceTotale,
+                           long delaiMs, ClassementPartage classement) {
         this.participation = participation;
         this.distanceTotale = distanceTotale;
         this.delaiMs = delaiMs;
+        this.classement = classement;
     }
 
     @Override
@@ -19,11 +22,12 @@ public class VoitureRunnable implements Runnable {
             System.out.println("[" + nom + "] " + participation.getDistanceParcourue()
                     + " / " + distanceTotale + " km");
             if (participation.estArrivee()) {
+                classement.enregistrer(participation.getVoiture()); // section protégée
                 System.out.println(nom + " franchit la ligne d'arrivée !");
                 break;
             }
             try {
-                Thread.sleep(delaiMs); // délai simulé entre deux déplacements
+                Thread.sleep(delaiMs);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 return;
