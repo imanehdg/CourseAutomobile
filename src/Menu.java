@@ -6,6 +6,7 @@ public class Menu {
     private final GestionCourse gestionCourse = new GestionCourse();
     private final GestionVoitures gestionVoitures = new GestionVoitures(gestionCourse);
     private final Simulateur simulateur = new Simulateur();
+    private final CourseConcurrente courseConcurrente = new CourseConcurrente(); // NOUVEAU
 
     public static void main(String[] args) {
         Menu menu = new Menu();
@@ -43,8 +44,9 @@ public class Menu {
                     case 6 -> creerCourse();
                     case 7 -> demarrerCourse();
                     case 8 -> afficherResultats();
+                    case 9 -> courseConcurrente.demarrer(gestionCourse.getCourseCourante()); // NOUVEAU
                     case 0 -> System.out.println("Au revoir !");
-                    default -> System.out.println("Erreur : choix invalide (0 à 8).");
+                    default -> System.out.println("Erreur : choix invalide (0 à 9)."); // MODIFIÉ
                 }
             } catch (IllegalArgumentException | IllegalStateException e) {
                 System.out.println("Erreur : " + e.getMessage());
@@ -65,6 +67,7 @@ public class Menu {
         System.out.println("6. Créer et configurer une course");
         System.out.println("7. Démarrer une course");
         System.out.println("8. Consulter les résultats");
+        System.out.println("9. Démarrer une course en mode concurrent"); // NOUVEAU
         System.out.println("0. Quitter");
         System.out.println("=========================================");
     }
