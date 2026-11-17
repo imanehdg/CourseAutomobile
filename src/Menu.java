@@ -6,7 +6,8 @@ public class Menu {
     private final GestionCourse gestionCourse = new GestionCourse();
     private final GestionVoitures gestionVoitures = new GestionVoitures(gestionCourse);
     private final Simulateur simulateur = new Simulateur();
-    private final CourseConcurrente courseConcurrente = new CourseConcurrente(); // NOUVEAU
+    private final CourseConcurrente courseConcurrente = new CourseConcurrente();
+    private final CourseExecutor courseExecutor = new CourseExecutor(); // NOUVEAU
 
     public static void main(String[] args) {
         Menu menu = new Menu();
@@ -17,6 +18,7 @@ public class Menu {
         }
     }
 
+    // ---------- Mode automatique (sans saisie, pour Docker/Jenkins) ----------
     public void lancerAuto() {
         gestionVoitures.ajouter(1, "Ferrari", "Ferrari", 20);
         gestionVoitures.ajouter(2, "BMW", "BMW", 15);
@@ -29,6 +31,7 @@ public class Menu {
         afficherResultats();
     }
 
+    // ---------- Mode interactif ----------
     public void lancer() {
         int choix;
         do {
@@ -44,9 +47,10 @@ public class Menu {
                     case 6 -> creerCourse();
                     case 7 -> demarrerCourse();
                     case 8 -> afficherResultats();
-                    case 9 -> courseConcurrente.demarrer(gestionCourse.getCourseCourante()); // NOUVEAU
+                    case 9 -> courseConcurrente.demarrer(gestionCourse.getCourseCourante());
+                    case 10 -> courseExecutor.demarrer(gestionCourse.getCourseCourante()); // NOUVEAU
                     case 0 -> System.out.println("Au revoir !");
-                    default -> System.out.println("Erreur : choix invalide (0 à 9)."); // MODIFIÉ
+                    default -> System.out.println("Erreur : choix invalide (0 à 10)."); // MODIFIÉ
                 }
             } catch (IllegalArgumentException | IllegalStateException e) {
                 System.out.println("Erreur : " + e.getMessage());
@@ -67,11 +71,13 @@ public class Menu {
         System.out.println("6. Créer et configurer une course");
         System.out.println("7. Démarrer une course");
         System.out.println("8. Consulter les résultats");
-        System.out.println("9. Démarrer une course en mode concurrent"); // NOUVEAU
+        System.out.println("9. Démarrer une course en mode concurrent");
+        System.out.println("10. Démarrer une course avec un pool de threads"); // NOUVEAU
         System.out.println("0. Quitter");
         System.out.println("=========================================");
     }
 
+    // ---------- Actions ----------
     private void ajouterVoiture() {
         int id = lireEntier("Identifiant : ");
         String nom = lireTexte("Nom : ");

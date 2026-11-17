@@ -5,7 +5,6 @@ import java.util.List;
 public class ClassementPartage {
     private final List<Voiture> ordreArrivee = new ArrayList<>();
 
-    // Enregistre une voiture à son arrivée. Renvoie false si elle est déjà enregistrée.
     public synchronized boolean enregistrer(Voiture voiture) {
         for (Voiture v : ordreArrivee) {
             if (v.getId() == voiture.getId()) {

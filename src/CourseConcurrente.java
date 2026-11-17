@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class CourseConcurrente {
     private static final long DELAI_MS = 500;
 
@@ -14,13 +17,32 @@ public class CourseConcurrente {
         System.out.println("========== COURSE CONCURRENTE ==========");
         System.out.println("Distance : " + course.getDistanceTotale() + " km");
 
+        List<Thread> threads = new ArrayList<>();
         for (Participation p : course.getParticipations()) {
             Thread t = new Thread(
                     new VoitureRunnable(p, course.getDistanceTotale(), DELAI_MS, classement),
                     p.getVoiture().getNom());
+            threads.add(t);
             t.start();
         }
-        
-        System.out.println("(Classement provisoire : " + classement.taille() + " voiture(s) arrivée(s) pour l'instant)");
+
+        try {
+            for (Thread t : threads) {
+                t.join();
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.out.println("Course interrompue.");
+            return;
+        }
+
+        course.setEtat(EtatCourse.TERMINEE);
+
+        System.out.println("============== CLASSEMENT ==============");
+        int rang = 1;
+        for (Voiture v : classement.getOrdreArrivee()) {
+            System.out.println(rang + ". " + v.getNom());
+            rang++;
+        }
     }
 }
