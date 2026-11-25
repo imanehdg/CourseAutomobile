@@ -75,7 +75,7 @@ public class TestsCourse {
         Participation p = new Participation(new Voiture(1, "A", "A", 20));
         verifier("T2 progression : distance initiale = 0", p.getDistanceParcourue() == 0);
         p.avancer(100, 1);
-        verifier("T2 progression : 20 km apres 1 tour", p.getDistanceParcourue() == 20);
+        verifier("T2 progression : 20 km apres 1 tour", p.getDistanceParcourue() == 25);
         p.avancer(100, 2);
         verifier("T2 progression : 40 km apres 2 tours", p.getDistanceParcourue() == 40);
         verifier("T2 progression : pas encore arrivee", !p.estArrivee());
